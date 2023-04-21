@@ -5,14 +5,16 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
+use Illuminate\View\View;
 class CustomAuthController extends Controller
 {
     public function index()
     {
-        return view('auth.login');
+        return view('auth.login');//chuyển đến trang login
     }
 
     public function customLogin(Request $request)
@@ -20,10 +22,10 @@ class CustomAuthController extends Controller
         $request->validate([
             'email' => 'required',
             'password' => 'required',
-        ]);
+        ]);//kiểm tra yêu cầu nhập của người dùng
 
-        $credentials = $request->only('email', 'password');
-        if (Auth::attempt($credentials)) {
+        $credentials = $request->only('email', 'password');// nhận một array có trường email, password
+        if (Auth::attempt($credentials)) {//xác nhận kiểm tra để đăng nhập hệ thống
             return redirect()->intended('dashboard')->withSuccess('Signed in');
         }
         return redirect("login")->withSuccess('Login details are not valid');
@@ -38,8 +40,8 @@ class CustomAuthController extends Controller
     {
         $request->validate([
             'name' => 'required',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|min:6',
+            // 'email' => 'required|email|unique:users',
+            // 'password' => 'required|min:6',
             'fileToUpload' => 'required',
             'phone' => 'required',
 
