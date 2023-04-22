@@ -1,9 +1,19 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Laravel 8 Custom Login And Registration Example - NiceSnippets.com</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .pagination-page{
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
 </head>
+
 <body>
     <nav class="navbar navbar-light navbar-expand-lg mb-5" style="background-color: #e3f2fd;">
         <div class="container">
@@ -15,22 +25,30 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
                     @guest
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('login') }}">Login</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('register-user') }}">Register</a>
-                    </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('login') }}">Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('register-user') }}">Register</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('listuser') }}">Admin</a>
+                        </li>
                     @else
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('signout') }}">Logout</a>
-                    </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('signout') }}">Logout</a>
+                        </li>
+                        @isset($id)
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('viewUser', $id) }}">View user</a>
+                            </li>
+                        @endisset
                     @endguest
                 </ul>
             </div>
         </div>
     </nav>
-    
+
     <!-- <div class="container">
         <table class="table">
             <thead>
@@ -69,4 +87,5 @@
     </div> -->
     @yield('content')
 </body>
+
 </html>

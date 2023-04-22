@@ -5,16 +5,15 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
-use Illuminate\View\View;
+use Illuminate\Support\Facades\DB;
 class CustomAuthController extends Controller
 {
     public function index()
     {
-        return view('auth.login');//chuyển đến trang login
+        return view('auth.login');
     }
 
     public function customLogin(Request $request)
@@ -22,11 +21,13 @@ class CustomAuthController extends Controller
         $request->validate([
             'email' => 'required',
             'password' => 'required',
-        ]);//kiểm tra yêu cầu nhập của người dùng
+        ]);
 
-        $credentials = $request->only('email', 'password');// nhận một array có trường email, password
-        if (Auth::attempt($credentials)) {//xác nhận kiểm tra để đăng nhập hệ thống
-            return redirect()->intended('dashboard')->withSuccess('Signed in');
+        $credentials = $request->only('email', 'password');
+        if (Auth::attempt($credentials)) {
+            $id = DB::table('users')->where('email', '=', $request->input('email'))->get('id');
+            $id = json_decode($id, true)[0]['id'];
+            return view('dashboard', compact('id'));
         }
         return redirect("login")->withSuccess('Login details are not valid');
     }
@@ -75,6 +76,7 @@ class CustomAuthController extends Controller
     public function dashboard()
     {
         if(Auth::check()){
+            
             return view('dashboard');
         }
         return redirect("login")->withSuccess("You are not allowed to access");
