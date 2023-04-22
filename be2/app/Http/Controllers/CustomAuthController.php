@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\DB;
 class CustomAuthController extends Controller
 {
     public function index()
@@ -24,7 +25,9 @@ class CustomAuthController extends Controller
 
         $credentials = $request->only('email', 'password');
         if (Auth::attempt($credentials)) {
-            return redirect()->intended('dashboard')->withSuccess('Signed in');
+            $id = DB::table('users')->where('email', '=', $request->input('email'))->get('id');
+            $id = json_decode($id, true)[0]['id'];
+            return view('dashboard', compact('id'));
         }
         return redirect("login")->withSuccess('Login details are not valid');
     }
@@ -38,8 +41,8 @@ class CustomAuthController extends Controller
     {
         $request->validate([
             'name' => 'required',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|min:6',
+            // 'email' => 'required|email|unique:users',
+            // 'password' => 'required|min:6',
             'fileToUpload' => 'required',
             'phone' => 'required',
 
@@ -73,6 +76,7 @@ class CustomAuthController extends Controller
     public function dashboard()
     {
         if(Auth::check()){
+            
             return view('dashboard');
         }
         return redirect("login")->withSuccess("You are not allowed to access");
